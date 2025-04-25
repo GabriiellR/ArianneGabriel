@@ -1,31 +1,40 @@
 // Seleciona todas as tags ou elementos necessários
 const wrapper = document.querySelector(".wrapper"),
-musicImage = wrapper.querySelector(".img-area img"),
-musicName = wrapper.querySelector(".song-details .name"),
-musicArtist = wrapper.querySelector(".song-details .artist"),
-mainAudio = wrapper.querySelector("#main-audio"),
-playPauseButton = wrapper.querySelector(".play-pause"),
-previousButton = wrapper.querySelector("#prev"),
-nextButton = wrapper.querySelector("#next"),
-progressArea = wrapper.querySelector(".progress-area"),
-progressBar = wrapper.querySelector(".progress-bar"),
-musicList = wrapper.querySelector(".music-list"),
-showMoreButton = wrapper.querySelector("#more-music"),
-hideMusicButton = musicList.querySelector("#close");
+    musicImage = wrapper.querySelector(".img-area img"),
+    musicName = wrapper.querySelector(".song-details .name"),
+    musicArtist = wrapper.querySelector(".song-details .artist"),
+    mainAudio = wrapper.querySelector("#main-audio"),
+    playPauseButton = wrapper.querySelector(".play-pause"),
+    previousButton = wrapper.querySelector("#prev"),
+    nextButton = wrapper.querySelector("#next"),
+    progressArea = wrapper.querySelector(".progress-area"),
+    progressBar = wrapper.querySelector(".progress-bar"),
+    musicList = wrapper.querySelector(".music-list"),
+    showMoreButton = wrapper.querySelector("#more-music"),
+    hideMusicButton = musicList.querySelector("#close");
+var executado = 0;
 
 // Carrega música aleatória na atualização da página
-let musicIndex = Math.floor((Math.random() * allMusic.length) + 1);
+let musicIndex = 1;
 
-window.addEventListener("load", ()=> {
+window.addEventListener("load", () => {
     loadMusic(musicIndex); // Chama a função loadMusic() quando a janela é carregada
     playingNow();
+
+    $('body').click(() => {
+        if (executado == 0) {
+            playMusic();
+            executado = 1;
+        }
+    })
+
 });
 
 // Funçãp que realiza o carregamento da Música
 function loadMusic(indexNumb) {
     musicName.innerText = allMusic[indexNumb - 1].name;
     musicArtist.innerText = allMusic[indexNumb - 1].artist;
-    // musicImage.src = `img/${allMusic[indexNumb - 1].img}.jpg`;
+    musicImage.src = `fotos/${allMusic[indexNumb - 1].img}`;
     mainAudio.src = `music/${allMusic[indexNumb - 1].src}.mp3`;
 }
 
@@ -67,7 +76,7 @@ function nextMusic() {
 
 // Arrow Function (Funções de seta que permitem escrever uma sintaxe de função mais curta)
 // Botão Play
-playPauseButton.addEventListener("click", ()=> {
+playPauseButton.addEventListener("click", () => {
     const isMusicPause = wrapper.classList.contains("paused");
 
     // Se isMusicPaused for verdadeiro, chamar função pauseMusic(), senão chamar função playMusic()
@@ -76,17 +85,17 @@ playPauseButton.addEventListener("click", ()=> {
 });
 
 // Botão Previous
-previousButton .addEventListener("click", ()=>{
+previousButton.addEventListener("click", () => {
     previousMusic(); // Chama a função previousButton 
 });
 
 // Botão Next
-nextButton.addEventListener("click", ()=>{
+nextButton.addEventListener("click", () => {
     nextMusic(); // Chama a função nextButton
 });
 
 // Atualiza a barra de progresso conforme a música rola
-mainAudio.addEventListener("timeupdate", (e)=> {
+mainAudio.addEventListener("timeupdate", (e) => {
     const currentTime = e.target.currentTime; // Obtendo a hora exata da música
     const duration = e.target.duration; // Obtendo a duração total da música
 
@@ -94,14 +103,14 @@ mainAudio.addEventListener("timeupdate", (e)=> {
     progressBar.style.width = `${progressWidth}%`;
 
     let musicCurrentTime = wrapper.querySelector(".current"),
-    musicDuration = wrapper.querySelector(".duration");
+        musicDuration = wrapper.querySelector(".duration");
 
-    mainAudio.addEventListener("loadeddata", ()=> {
+    mainAudio.addEventListener("loadeddata", () => {
         // Atualiza a duração total da música
         let audioDuration = mainAudio.duration;
         let totalMinutes = Math.floor(audioDuration / 60); // Convertendo para Minutos
         let totalSeconds = Math.floor(audioDuration % 60); // Convertendo para Segundos
-        if(totalSeconds < 10) { // adiciona 0 se os segundos forem menor que 10
+        if (totalSeconds < 10) { // adiciona 0 se os segundos forem menor que 10
             totalSeconds = `0${totalSeconds}`;
         }
 
@@ -112,7 +121,7 @@ mainAudio.addEventListener("timeupdate", (e)=> {
     // Atualiza a reprodução da música com a hora atual
     let currentMinutes = Math.floor(currentTime / 60); // Convertendo para Minutos
     let currentSeconds = Math.floor(currentTime % 60); // Convertendo para Segundos
-    if(currentSeconds < 10) { // adiciona 0 se os segundos forem menor que 10
+    if (currentSeconds < 10) { // adiciona 0 se os segundos forem menor que 10
         currentSeconds = `0${currentSeconds}`;
     }
 
@@ -121,7 +130,7 @@ mainAudio.addEventListener("timeupdate", (e)=> {
 });
 
 // Atualiza a reprodução da música com a hora atual de acordo com a largura da barrinha de progresso
-progressArea.addEventListener("click", (e)=>{
+progressArea.addEventListener("click", (e) => {
     let progressWidthval = progressArea.clientWidth; // Obtém a largura da barrinha de progresso
     let clickedOffSetX = e.offsetX; // Valor de deslocamento
     let songDuration = mainAudio.duration; // Duração total da música
@@ -132,10 +141,10 @@ progressArea.addEventListener("click", (e)=>{
 
 // Botão de Repetir e Aleatório
 const repeatButton = wrapper.querySelector("#repeat-plist");
-repeatButton.addEventListener("click", ()=> {
+repeatButton.addEventListener("click", () => {
     let getText = repeatButton.innerText; // Obtém innerText do ícone
 
-    switch(getText) { 
+    switch (getText) {
         case "repeat": // Caso o ícone seja repeat, mudar para repeat_one
             repeatButton.innerText = "repeat_one";
             repeatButton.setAttribute("title", "Song Looped");
@@ -152,10 +161,10 @@ repeatButton.addEventListener("click", ()=> {
 });
 
 // Repetindo a música
-mainAudio.addEventListener("ended", ()=> {
+mainAudio.addEventListener("ended", () => {
     let getText = repeatButton.innerText; // Obtém innerText do ícone
 
-    switch(getText) { 
+    switch (getText) {
         case "repeat": // Caso este ícone seja repeat, a função nextMusic é chamada para que a próxima música toque
             nextMusic();
             break;
@@ -165,11 +174,11 @@ mainAudio.addEventListener("ended", ()=> {
             playMusic();
             break;
         case "shuffle": // Caso o ícone seja shuffle, mudar para repeat
-        // Gerando índice aleatório entre a faixa máxima de comprimento da matriz
-            let randIndex = Math.floor((Math.random() * allMusic.length) + 1); 
+            // Gerando índice aleatório entre a faixa máxima de comprimento da matriz
+            let randIndex = Math.floor((Math.random() * allMusic.length) + 1);
             do {
                 randIndex = Math.floor((Math.random() * allMusic.length) + 1); // Este loop será executado até o próximo número aleatório não ser o mesmo do índice de música atual
-            } while(musicIndex == randIndex); // Passa randIndex para musicIndex, então a música tocará no modo aleatório
+            } while (musicIndex == randIndex); // Passa randIndex para musicIndex, então a música tocará no modo aleatório
             musicIndex = randIndex;
             loadMusic(musicIndex);
             playMusic();
@@ -179,11 +188,11 @@ mainAudio.addEventListener("ended", ()=> {
 });
 
 // Função Exibir e Fechar Playlist
-showMoreButton.addEventListener("click", ()=> {
+showMoreButton.addEventListener("click", () => {
     musicList.classList.toggle("show");
 });
 
-hideMusicButton.addEventListener("click", ()=> {
+hideMusicButton.addEventListener("click", () => {
     showMoreButton.click();
 });
 
@@ -200,24 +209,24 @@ for (let i = 0; i < allMusic.length; i++) {
                     <audio class="${allMusic[i].src}" src="music/${allMusic[i].src}.mp3"></audio>
                     <span id="${allMusic[i].src}" class="audio-duration">3:40</span>
                 </li>`;
-        ulTag.insertAdjacentHTML("beforeend", liTag);
-        
-        let liAudioDuration = ulTag.querySelector(`#${allMusic[i].src}`);
-        let liAudioTag = ulTag.querySelector(`.${allMusic[i].src}`);
+    ulTag.insertAdjacentHTML("beforeend", liTag);
 
-        liAudioTag.addEventListener("loadeddata", ()=> {
-            let audioDuration = liAudioTag.duration;
-            let totalMinutes = Math.floor(audioDuration / 60); 
-            let totalSeconds = Math.floor(audioDuration % 60); 
-            if(totalSeconds < 10) { // adiciona 0 se os segundos forem menor que 10
-                totalSeconds = `0${totalSeconds}`;
-            }
+    let liAudioDuration = ulTag.querySelector(`#${allMusic[i].src}`);
+    let liAudioTag = ulTag.querySelector(`.${allMusic[i].src}`);
 
-            liAudioDuration.innerText = `${totalMinutes}:${totalSeconds}`;
-            // Adiciona o atributo t-duration
-            liAudioDuration.setAttribute("t-duration", `${totalMinutes}:${totalSeconds}`);
-        });
-} 
+    liAudioTag.addEventListener("loadeddata", () => {
+        let audioDuration = liAudioTag.duration;
+        let totalMinutes = Math.floor(audioDuration / 60);
+        let totalSeconds = Math.floor(audioDuration % 60);
+        if (totalSeconds < 10) { // adiciona 0 se os segundos forem menor que 10
+            totalSeconds = `0${totalSeconds}`;
+        }
+
+        liAudioDuration.innerText = `${totalMinutes}:${totalSeconds}`;
+        // Adiciona o atributo t-duration
+        liAudioDuration.setAttribute("t-duration", `${totalMinutes}:${totalSeconds}`);
+    });
+}
 
 // Trocando música específica 
 const allLiTags = ulTag.querySelectorAll("li");
@@ -233,11 +242,11 @@ function playingNow() {
         }
 
         // Se houver uma tag li cujo índice li é igual a musicIndex, então estilizá-la com a classe playing
-        if(allLiTags[j].getAttribute("li-index") == musicIndex) {
+        if (allLiTags[j].getAttribute("li-index") == musicIndex) {
             allLiTags[j].classList.add("playing");
             audioTag.innerText = "Tocando";
         }
-    
+
         // Adiciona o atributo "onclick" em todas as li tags
         allLiTags[j].setAttribute("onclick", "clicked(this)");
     }

@@ -24,14 +24,14 @@ let mainSliderOptions = {
       this.autoplay.start();
     },
     slideChangeTransitionEnd: function () {
-      let swiper = this,
-        captions = swiper.el.querySelectorAll(".caption");
-      for (let i = 0; i < captions.length; ++i) {
-        captions[i].classList.remove("show");
-      }
-      swiper.slides[swiper.activeIndex]
-        .querySelector(".caption")
-        .classList.add("show");
+      // let swiper = this,
+      //   captions = swiper.el.querySelectorAll(".caption");
+      // for (let i = 0; i < captions.length; ++i) {
+      //   captions[i].classList.remove("show");
+      // }
+      // swiper.slides[swiper.activeIndex]
+      //   .querySelector(".caption")
+      //   .classList.add("show");
     },
     progress: function () {
       let swiper = this;
